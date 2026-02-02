@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>PWA Receiver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+
+<link rel="manifest" href="manifest-receiver.json">
+
+<style>
+body { font-family: Arial; padding: 20px; }
+pre { background: #eee; padding: 10px; }
+</style>
+</head>
+<body>
+
+<h2>📥 Application de réception</h2>
+<button id="enable">Activer les notifications</button>
+<pre id="token"></pre>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBn7VIddclO7KtrXb5sibCr9SjVLjOy-qI",
+  authDomain: "theo1d.firebaseapp.com",
+  projectId: "theo1d",
+  messagingSenderId: "269629842962",
+  appId: "1:269629842962:web:a80a12b04448fe1e595acb"
+};
+
+const app = initializeApp(firebaseConfig);
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/firebase-messaging-sw.js");
+}
+
+document.getElementById("enable").onclick = async () => {
+  if (!(await isSupported())) return alert("FCM non supporté");
+
+  const messaging = getMessaging(app);
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") return;
+
+  const token = await getToken(messaging, {
+    vapidKey: "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM"
+  });
+
+  document.getElementById("token").textContent = token;
+};
+
+onMessage(getMessaging(app), payload => {
+  alert("Message reçu : " + payload.notification.body);
+});
+</script>
+
+</body>
+</html>
