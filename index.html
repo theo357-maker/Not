@@ -34,7 +34,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/firebase-messaging-sw.js");
+  navigator.serviceWorker.register("firebase-messaging-sw.js");
 }
 
 document.getElementById("enable").onclick = async () => {
